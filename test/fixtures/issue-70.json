@@ -1,0 +1,30 @@
+{
+  "definitions": {
+    "AuthResponse": {
+      "token": "string",
+      "valid_until": "timestamp"
+    }
+  },
+  "paths": {
+    "/auth/": {
+      "post": {
+        "description": "Handles authentication attemps",
+        "responses": {
+          "200": {
+            "description": "Succesful authentication",
+            "examples": {
+              "application/json": {
+                "token": "Auth token to use for every other request",
+                "valid_until": "Date until which the token is valid"
+               }
+            },
+            "schema": {
+              "$ref": "#/definitions/AuthResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "swagger": "2.0"
+}
