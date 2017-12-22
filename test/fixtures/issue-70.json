@@ -1,4 +1,9 @@
 {
+  "swagger": "2.0",
+  "info": {
+    "description": "https://github.com/sourcey/spectacle/issues/70",
+    "title": "issue 70"
+  },
   "definitions": {
     "AuthResponse": {
       "token": "string",
