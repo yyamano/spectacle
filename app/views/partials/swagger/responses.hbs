@@ -47,7 +47,13 @@
       {{/if}}
 
       {{#each responses}}
-        {{#if schema}}
+        {{#if examples}}
+          <h5>Response Example <span>({{@key}} {{httpResponseCode @key}})</span></h5>
+          {{#each examples}}
+          <h5>Content-Type: {{@key}}</h5>
+             {{printResponseExample this}}
+          {{/each}}
+        {{else if schema}}
         <section>
           <h5>Response Example <span>({{@key}} {{httpResponseCode @key}})</span></h5>
           {{>swagger/print-example .}}
