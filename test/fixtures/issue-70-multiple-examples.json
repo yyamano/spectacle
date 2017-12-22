@@ -1,0 +1,67 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "https://github.com/sourcey/spectacle/issues/70",
+    "title": "issue 70"
+  },
+  "definitions": {
+    "AuthResponse": {
+      "token": "string",
+      "valid_until": "timestamp"
+    },
+    "InvalidParam": {
+      "name": "string",
+      "reason": "string"
+    },
+    "ProblemDetails": {
+      "type": "string",
+      "title": "string",
+      "detail": "string",
+      "invalid-params": {
+        "type": "array",
+        "ref": "#definitions/InvalidParam"
+      }
+    }
+  },
+  "paths": {
+    "/auth/": {
+      "post": {
+        "description": "Handles authentication attemps",
+        "responses": {
+          "200": {
+            "description": "Succesful authentication",
+            "produces": [ "application/json" ],
+            "examples": {
+              "application/json": {
+                "token": "Auth token to use for every other request",
+                "valid_until": "Date until which the token is valid"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/AuthResponse"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetail"
+            },
+            "examples": {
+	      "application/problem+json": {
+                "type": "http://example.com/validation-error",
+                "title": "invalid params",
+                "invalid-params": [ {"name": "foo", "reason": "is must be a integer"} ]
+              },
+	      "application/json": {
+                "type": "http://example.com/validation-error",
+                "title": "invalid params",
+                "invalid-params": [ {"name": "bar", "reason": "is must be a integer"} ]
+              }
+  	    }
+          }
+        }
+      }
+    }
+  },
+  "swagger": "2.0"
+}
