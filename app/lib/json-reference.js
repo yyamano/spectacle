@@ -35,6 +35,7 @@ function resolveLocal(doc, obj, ref) {
   if(typeof obj !== "object") {
     throw new TypeError("resolveLocal() must be given an object.  Given "+typeof obj+" ("+obj+")")
   }
+  var resolved = {}
   for(var k in obj) {
     var val = obj[k];
     if(typeof val !== "object" || val === null) { continue; }
@@ -44,14 +45,18 @@ function resolveLocal(doc, obj, ref) {
         $ref = path.posix.join(ref, k, $ref)
       }
       if($ref.indexOf("#/") === 0) {
-        Object.assign(val, jsonSearch($ref, doc))
+        var referenced = jsonSearch($ref, doc)
+        Object.assign(val, referenced)
+        resolved[$ref] = referenced
         delete val.$ref;
       }
     }
     else {
-      resolveLocal(doc, val, path.posix.join(ref, k))
+      Object.assign(resolved, resolveLocal(doc, val, path.posix.join(ref, k)))
     }
   }
+
+  return resolved
 }
 
 module.exports = {
