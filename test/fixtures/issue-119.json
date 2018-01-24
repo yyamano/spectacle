@@ -1,0 +1,16 @@
+{
+  "swagger": "2.0",
+  "definitions": {
+    "flavor": {
+      "description": "ice cream flavor",
+      "example": "chocolate",
+      "type": "string",
+      "enum": [
+        "chocolate",
+        "vanilla",
+        "rocky road"
+      ]
+    }
+  }
+}
+
