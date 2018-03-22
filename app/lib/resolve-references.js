@@ -98,8 +98,12 @@ function replaceReference(cwd, top, obj, context) {
   var ref = pathUtils.join(cwd, obj.$ref)
   var external = pathUtils.relative(path.posix.dirname(top["x-spec-path"]), ref)
   var referenced = module.exports.fetchReference(ref)
+  var resolved = {}
   if(typeof referenced === "object") {
-    resolveLocal(referenced, referenced, "#/")
+    var file = path.posix.dirname(ref).split("#", 1)[0]
+    var doc = module.exports.fetchReference(file)
+    resolved = resolveLocal(doc, referenced, "#/")
+    //resolveLocal(referenced, referenced, "#/")
     referenced["x-external"] = external;
     module.exports.replaceRefs(path.posix.dirname(ref), top, referenced, context)
   }
@@ -107,6 +111,9 @@ function replaceReference(cwd, top, obj, context) {
     if(!top.definitions) { top.definitions = {}; }
     if(!top.definitions[external]) { top.definitions[external] = referenced; }
     Object.assign(obj, { "$ref": "#/definitions/"+external.replace("/", "%2F") })
+    Object.keys(resolved).forEach(function(ref) {
+      top.definitions[file + ref] = resolved[ref]
+    })
   }
   else if(contexts.path(context)) {
     Object.keys(referenced).forEach(function(method) {
@@ -168,12 +175,12 @@ function replaceRefs(cwd, top, obj, context) {
     if(typeof val !== "object" || val === null) { continue; }
 
     if(val.$ref) {
-
       if(localReference(val.$ref)) {
         if((cwd === top["x-spec-path"]) || (cwd === path.dirname(top["x-spec-path"]))) { continue; }
         throw new Error(
           "Can't deal with internal references in external files yet.  Got: '"+val.$ref+"'.")
       }
+
 
       try {
         module.exports.replaceReference(cwd, top, val, context + k + "/")
